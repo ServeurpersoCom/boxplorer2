@@ -1933,8 +1933,6 @@ int main(int argc, char **argv) {
   float hmd_pos[3] = {0, 0, 0};
   float hmd_ipd = 0.067;
 
-  uint32_t poll_ticks = SDL_GetTicks();
-
   while (!done) {
     int ctlXChanged = 0, ctlYChanged = 0;
 
@@ -2940,11 +2938,8 @@ int main(int argc, char **argv) {
     if (done)
       break;
 
-    // Poll keyboard and mouse state for level-based inputs.
-    // At around 1000/16 per second polling rate (or slower if FPS is slower..).
-    if (SDL_GetTicks() - poll_ticks >= 16) {
-      poll_ticks += 16;
-
+    // Poll keyboard and mouse state for level-based inputs, once per frame.
+    {
       const Uint8 *keystate = SDL_GetKeyboardState(0);
       int mouse_dx, mouse_dy;
       Sint16 joystick_x = 0, joystick_y = 0, joystick_z = 0, joystick_r = 0,
