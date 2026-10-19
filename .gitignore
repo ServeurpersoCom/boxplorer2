@@ -32,3 +32,6 @@ last.cfg
 # Makefile symlinks
 makefile
 GNUmakefile
+
+# CMake build tree (BUILD is a file here)
+out/

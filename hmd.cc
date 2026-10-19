@@ -1,6 +1,6 @@
 #include "hmd.h"
 
-#if !defined(_WIN32)
+#if !defined(_WIN32) || defined(BOX_NO_HMD)
 
 #include "utils.h"
 
