@@ -1830,10 +1830,10 @@ int main(int argc, char **argv) {
   }
 
   // Set up the video mode, OpenGL state, shaders and shader parameters.
+  initGraphics(false, config.width, config.height, lifeforms.empty());
   if (config.fullscreen) {
+    // the fullscreen toggle needs an existing window
     initGraphics(true, 0, 0, lifeforms.empty());
-  } else {
-    initGraphics(false, config.width, config.height, lifeforms.empty());
   }
 
   // Parse as many uniforms from glsl source as we can find.
