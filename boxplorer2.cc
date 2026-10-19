@@ -33,6 +33,9 @@
 
 #else // _WIN32
 
+#include <windows.h>
+#include <commdlg.h>
+
 #pragma warning(disable : 4996) // unsafe function
 #pragma warning(disable : 4244) // double / float conversion
 #pragma warning(disable : 4305) // double / float truncation
@@ -749,7 +752,9 @@ bool setupDirectories(const char *configFile) {
     BaseDir.erase(slash + 1);
 
   char *fileName = NULL;
-  std::string tmp = BaseDir + "\\" + std::string(configFile);
+  std::string tmp = std::filesystem::path(configFile).is_absolute()
+                        ? std::string(configFile)
+                        : BaseDir + "\\" + std::string(configFile);
   DWORD result = GetFullPathName(tmp.c_str(), MAX_PATH, dirName, &fileName);
   if (result) {
     if (fileName) {
@@ -777,6 +782,8 @@ bool setupDirectories(const char *configFile) {
 
   // Collect all available .lif and .rle filenames.
   const std::filesystem::path cfgs{WorkingDir};
+  if (!std::filesystem::is_directory(cfgs))
+    return false;
   for (auto const &dir_entry : std::filesystem::directory_iterator{cfgs}) {
     string ext(dir_entry.path().extension().string());
     if (ext == ".lif" || ext == ".rle") {
@@ -1660,6 +1667,24 @@ int main(int argc, char **argv) {
   if (setupDirectories(configFile) && config.loadConfig(BaseFile, &defines)) {
     // success
   } else {
+#if defined(_WIN32)
+    // Without a usable configuration, offer a file dialog.
+    char filename[MAX_PATH] = {0};
+    OPENFILENAME opf;
+    ZeroMemory(&opf, sizeof(opf));
+    opf.lStructSize = sizeof(OPENFILENAME);
+    opf.lpstrFilter = "Fractal configuration files\0*.cfg\0\0";
+    opf.nFilterIndex = 1L;
+    opf.lpstrFile = filename;
+    opf.nMaxFile = MAX_PATH;
+    opf.lpstrTitle = "Open fractal configuration file";
+    opf.lpstrDefExt = "cfg";
+    opf.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_READONLY;
+    if (GetOpenFileName(&opf) && setupDirectories(opf.lpstrFile) &&
+        config.loadConfig(BaseFile, &defines)) {
+      // success
+    } else
+#endif
     { DIE("Usage: boxplorer2 <configuration-file.cfg>"); }
   }
 

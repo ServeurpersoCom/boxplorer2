@@ -58,3 +58,7 @@ if (MSVC)
     # the sources auto-link SDL2.lib and SDL2main.lib by pragma, the targets above provide them
     target_link_options(boxplorer2 PRIVATE /NODEFAULTLIB:SDL2.lib /NODEFAULTLIB:SDL2main.lib)
 endif()
+
+# the binary loads setup.inc and the default effect shaders from include/ next to itself
+add_custom_command(TARGET boxplorer2 POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/include $<TARGET_FILE_DIR:boxplorer2>/include)
