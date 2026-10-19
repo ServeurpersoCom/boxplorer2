@@ -3083,7 +3083,7 @@ int main(int argc, char **argv) {
         m_rotateZ2(camera.keyb_rot_speed * -joystick_r / 100000.0);
 
       if (keystate[SDL_SCANCODE_Z]) {
-        if (camera.speed > 0.000001)
+        if (camera.speed > 1e-15)
           camera.speed -= camera.speed / 10;
         DEBUG("speed %.8e", camera.speed);
       }
