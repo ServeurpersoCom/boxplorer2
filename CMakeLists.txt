@@ -50,7 +50,8 @@ add_executable(boxplorer2
 target_include_directories(boxplorer2 PRIVATE . include AntTweakBar/include AntTweakBar/src)
 
 # BOX_NO_HMD selects the headset-less HMD stub, so no LibOVR is needed
-target_compile_definitions(boxplorer2 PRIVATE TW_STATIC TW_NO_LIB_PRAGMA BOX_NO_HMD)
+# BOX_NO_GPU_DE skips the GPU DE fallback: speed stays on the Z/C keys unless the cfg declares a CPU DE
+target_compile_definitions(boxplorer2 PRIVATE TW_STATIC TW_NO_LIB_PRAGMA BOX_NO_HMD BOX_NO_GPU_DE)
 
 target_link_libraries(boxplorer2 PRIVATE SDL2::SDL2main SDL2::SDL2-static OpenGL::GL ${CMAKE_DL_LIBS})
 

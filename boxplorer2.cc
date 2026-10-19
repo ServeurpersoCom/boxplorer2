@@ -899,7 +899,7 @@ bool initGraphics(bool fullscreenToggle, int w, int h, bool hideMouse) {
   // glEnable(GL_FRAMEBUFFER_SRGB); // TODO color management
 
   if (!config.disable_de) {
-#if defined(GL_RGBA32F) // We need this to be actually capable of GL_FLOAT
+#if defined(GL_RGBA32F) && !defined(BOX_NO_GPU_DE) // We need this to be actually capable of GL_FLOAT
     // Try compile same shader to get a minimal DE computation version.
     render.shaderManager.loadDEShader(defines, "#define ST_COMPUTE_DE_ONLY\n");
 
